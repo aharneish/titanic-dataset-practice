@@ -231,11 +231,10 @@ c_matrix_per=c_matrix.astype('float')/c_matrix.sum(axis=1)[:,np.newaxis]
 print("confusion matrix percentages of each \n")
 print(c_matrix_per)
 print('')
-rue_class_names = ['True Survived', 'True Not Survived']
+true_class_names = ['True Survived', 'True Not Survived']
 predicted_class_names = ['Predicted Survived', 'Predicted Not Survived']
-
 df_c_matrix=pd.DataFram(c_matrix, index = true_class_names,columns = predicted_class_names)
-df_c_matrix_percent=pd.DataFrame(c_matrix_percent,index = true_class_names,columns = predicted_class_names)
+df_c_matrix_percent=pd.DataFrame(c_matrix_per,index = true_class_names,columns = predicted_class_names)
 plt.figure(figsize=(15,5))
 plt.subplot(121)
 sns.heatmap(df_c_matrix,annot=True,fmt='d')
