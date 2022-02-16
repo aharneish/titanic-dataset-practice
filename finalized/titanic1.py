@@ -242,3 +242,14 @@ plt.subplot(122)
 sns.heatmap(df_c_matrix_percent,annot=True)
 plt.show()
 #comparing models
+models=pd.DataFrame({
+    'Model':['Logistic Regression','Support Vector Machine','Linear SVM','K-nearest Neighbours','Decision tree','Random Forest','Naive Bayes','Perceptron','Stochastic Gradient Desent(SGD)'],
+    'Score':[a_lg,a_svm,a_lsvm,a_knn,a_dtc,a_rfc,a_nb,a_p,a_sgd]
+})
+models.sort_values(by='Score',ascending=False)
+print(testdata.head())
+sub=pd.DataFrame({
+    'PassengerId':testdata['PassengerId'],
+    'Survived':y_pred_rfc
+})
+sub.to_csv('Sub.csv',index=False)
