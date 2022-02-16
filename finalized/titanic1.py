@@ -2,7 +2,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.tree import *
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression,Perceptron,SGDClassifier
+from sklearn.svm import SVC,LinearSVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import confusion_matrix
+import itertools
 sns.set_theme()
 traindata=pd.read_csv('train.csv')
 testdata=pd.read_csv('test.csv')
@@ -149,3 +156,90 @@ testdata=testdata.drop(features_drop,axis=1)
 traindata=traindata.drop(['PassengerId','AgeBand','FareBand'],axis=1)
 traindata.head()
 testdata.head()
+#defining training and testing sets
+x_traindata=traindata.drop('Survived',axis=1)
+y_traindata=traindata['Survived']
+x_testdata=testdata.drop('PassengerId',axis=1).copy()
+x_traindata.shape
+y_traindata.shape
+x_testdata.shape
+#checking the accuracy of various classification algorithims
+#logistic regression
+c=LogisticRegression()
+c.fit(x_traindata,y_traindata)
+y_pred_lg=c.predict(x_testdata)
+a_lg=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_lg)
+#support vector machine
+c=SVC()
+c.fit(x_traindata,y_traindata)
+y_pred_svc=c.predict(x_testdata)
+a_svm=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_svm)
+#linear svm
+c=LinearSVC()
+c.fit(x_traindata,y_traindata)
+y_pred_lsvm=c.predict(x_testdata)
+a_lsvm=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_lsvm)
+#k nearest neighbours
+c=KNeighborsClassifier(n_neighbors=3)
+c.fit(x_traindata,y_traindata)
+y_pred_knn=c.predict(x_testdata)
+a_knn=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_knn)
+#decision treee
+c=DecisionTreeClassifier()
+c.fit(x_traindata,y_traindata)
+y_pred_dtc=c.predict(x_testdata)
+a_dtc=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_dtc)
+#random forest
+c=RandomForestClassifier(n_estimators=100)
+c.fit(x_traindata,y_traindata)
+y_pred_rfc=c.predict(x_testdata)
+a_rfc=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_rfc)
+#gaussian naive bayes
+c=GaussianNB()
+c.fit(x_traindata,y_traindata)
+y_pred_nb=c.predict(x_testdata)
+a_nb=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_nb)
+#perceptron
+c=Perceptron(max_iter=5,tol=None)
+c.fit(x_traindata,y_traindata)
+y_pred_p=c.predict(x_testdata)
+a_p=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_p)
+#sgd(stochastic gradient descent)
+c=SGDClassifier(max_iter=5,tol=None)
+c.fit(x_traindata,y_traindata)
+y_pred_sgd=c.predict(x_testdata)
+a_sgd=round(c.score(x_traindata,y_traindata)*100,2)
+print(a_sgd)
+#confusion matrix
+print("accuracy: %i %% \n"%a_rfc)
+cl_names=['Survived','Not Survived']
+#comuting the confusion matrix
+c_matrix=confusion_matrix(y_traindata,y_pred_rfc)
+np.set_printoptions(precison=2)
+print("the confusion matrix \n")
+print(c_matrix)
+print('')
+c_matrix_per=c_matrix.astype('float')/c_matrix.sum(axis=1)[:,np.newaxis]
+print("confusion matrix percentages of each \n")
+print(c_matrix_per)
+print('')
+rue_class_names = ['True Survived', 'True Not Survived']
+predicted_class_names = ['Predicted Survived', 'Predicted Not Survived']
+
+df_c_matrix=pd.DataFram(c_matrix, index = true_class_names,columns = predicted_class_names)
+df_c_matrix_percent=pd.DataFrame(c_matrix_percent,index = true_class_names,columns = predicted_class_names)
+plt.figure(figsize=(15,5))
+plt.subplot(121)
+sns.heatmap(df_c_matrix,annot=True,fmt='d')
+plt.subplot(122)
+sns.heatmap(df_c_matrix_percent,annot=True)
+plt.show()
+#comparing models
